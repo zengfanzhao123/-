@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入样式 -->
+    <link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+    
+    <title>扫雷</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+        }
+
+        .box {
+            width: 660px;
+            height: 354px;
+            background-color: pink;
+            margin: 100px auto;
+        }
+
+        td {
+            width: 20px;
+            height: 20px;
+            background-color: #BFBFBF;
+            text-align: center;
+            line-height: 20px;
+        }
+
+        a {
+            text-decoration: none;
+            color: #000;
+        }
+    </style>
+</head>
+
+<body>
+    <h4>剩余雷数：<span></span></h4>
+    <div class="box">
+        <a href="javascript:;">
+            <table></table>
+        </a>
+    </div>
+    <!-- 引入组件库 -->
+    <script src="https://unpkg.com/element-ui/lib/index.js"></script>
+    <script>
+        //禁止选中
+        document.οncοntextmenu=new Function('event.returnValue=false;');
+        document.onselectstart=new Function('event.returnValue=false;');
+        const box = document.querySelector('.box')
+        const table = document.querySelector('table')
+        const td = document.querySelectorAll('td')
+        const cellArr = []
+        const cell = []
+        // 隐藏提示数字
+        table.style.color = '#BFBFBF'
+        //幕布
+        for (let y = 0; y < 16; y++) {
+            cellArr.push([])
+            for (let x = 0; x < 30; x++) {
+                cellArr[y].push('<td></td>')
+            }
+            cellArr[y][0] = '<tr><td></td>'
+            cellArr[y][29] = '<td></td></tr>'
+            cell.push(cellArr[y].join(''))
+        }
+        table.innerHTML = cell.join('')
+        // 点击事件
+        table.addEventListener('click', (e) => {
+            if (e.target.tagName == 'TD') {
+                e.target.style.backgroundColor = '#fff'
+            }
+        })
+        //右键插旗
+        
+        !function(){
+            table.addEventListener('mouseup', (e) => {
+                if (e.target.tagName == 'TD') {
+                    if(e.button === 2) {
+                        if(e.target.innerHTML)e.target.classList.add(`${e.target.innerHTML}`)
+                        e.target.innerHTML = `<i class="el-icon-s-flag" style="color:red"></i>`
+                    }
+                }
+                // 拔旗
+                if(e.target.tagName === 'I' && e.button === 2){
+                    e.target.parentNode.removeChild(e.target)
+                    e.path[1].innerHTML = e.path[1].classList || ''
+                }
+            })
+        }()
+        // 屏蔽浏览器默认鼠标右键
+        document.oncontextmenu = ()=> {
+            return false;
+        }
+        //定位
+        const tr = document.querySelectorAll('tr')
+        // tr[y].children[x]
+        //生成雷
+        const mineArr = []
+        for (let i = 0; i < 99; i++) {
+            let randomX, randomY
+            function pdMine() {
+                randomX = Math.floor(Math.random() * (30))
+                randomY = Math.floor(Math.random() * (16))
+                let flag = true
+                // 添加地雷数组,去重，重新生成地雷
+                if (i > 0) {
+                    mineArr.forEach((data) => {
+                        if (data[0] == randomX && data[1] == randomY) {
+                            flag = false
+                            pdMine()
+                        }
+                    })
+                }
+                if (flag) mineArr.push([randomX, randomY])
+            }
+            pdMine()
+
+        }
+
+        //透视地雷
+        function perspective() {
+            for (let y = 0; y < 16; y++) {
+                for (let x = 0; x < 30; x++) {
+                    mineArr.forEach((data) => {
+                        if (x === data[0] && y === data[1]) {
+                            tr[data[1]].children[data[0]].style.color = '#000'
+                            tr[y].children[x].style.backgroundColor = 'red'
+                            tr[y].children[x].innerHTML = '雷'
+                        }
+                    })
+                }
+            }
+        }
+        //生成地雷提示数字
+        function MineSignal() {
+            for (let y = 0; y < 16; y++) {
+                for (let x = 0; x < 30; x++) {
+                    // tr[y].children[x].addEventListener('click', ()=>{
+                    // 第一行 非两边
+                    if (y === 0 && x !== 0 && x !== 29) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x - 1) === data[0] && y === data[1]) num++
+                                if ((x + 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y + 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y + 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y + 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                                // 点到零了,显示周围相接
+
+                            }
+                        })
+                    }
+                    // 最后一行非两边
+                    if (y === 15 && x !== 0 && x !== 29) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x - 1) === data[0] && y === data[1]) num++
+                                if ((x + 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y - 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y - 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y - 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                                // 点到零了,显示周围相接
+                                if (num === 0) {
+
+                                }
+                            }
+                        })
+                    }
+                    // 非上下行非两边
+                    if (y !== 0 && y !== 15 && x !== 0 && x !== 29) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x - 1) === data[0] && y === data[1]) num++
+                                if ((x + 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y - 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y - 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y - 1) === data[1]) num++
+                                if ((x) === data[0] && (y + 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y + 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y + 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                                // 点到零了,显示周围相接
+                                if (num === 0) {
+
+                                }
+                            }
+                        })
+                    }
+                    // 左边非上下
+                    if (y !== 0 && y !== 15 && x === 0) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x + 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y - 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y - 1) === data[1]) num++
+                                if ((x) === data[0] && (y + 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y + 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                                // 点到零了,显示周围相接
+                                if (num === 0) {
+
+                                }
+                            }
+                        })
+                    }
+                    // 右边非上下
+                    if (y !== 0 && y !== 15 && x === 29) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x - 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y - 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y - 1) === data[1]) num++
+                                if ((x) === data[0] && (y + 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y + 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                                // 点到零了,显示周围相接
+                                if (num === 0) {
+
+                                }
+                            }
+                        })
+                    }
+                    // 四个角左上
+                    if (y === 0 && x === 0) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x + 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y + 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y + 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                                // 点到零了,显示周围相接
+                                if (num === 0) {
+
+                                }
+                            }
+                        })
+                    }
+                    // 四个角右上
+                    if (y === 0 && x === 29) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x - 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y + 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y + 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                                // 点到零了,显示周围相接
+                                if (num === 0) {
+
+                                }
+                            }
+                        })
+                    }
+                    // 四个角左下
+                    if (y === 15 && x === 0) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x + 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y - 1) === data[1]) num++
+                                if ((x + 1) === data[0] && (y - 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                            }
+                        })
+                    }
+                    // 四个角右下
+                    if (y === 15 && x === 29) {
+                        let num = 0
+                        let flag = true
+                        mineArr.forEach((data) => {
+                            if (x === data[0] && y === data[1]) flag = false
+                            // 自身不是雷才跑下面程序
+                            if (flag) {
+                                if ((x - 1) === data[0] && y === data[1]) num++
+                                if ((x) === data[0] && (y - 1) === data[1]) num++
+                                if ((x - 1) === data[0] && (y - 1) === data[1]) num++
+                                if (num !== 0) tr[y].children[x].innerHTML = num
+                            }
+                        })
+                    }
+                    // })
+                }
+            }
+        }
+        MineSignal()
+        // 点到空了,显示周围相接
+        function Numbgc(num1,num2){
+            if(num1!==0)tr[num2].children[num1 - 1].style.backgroundColor = "white"
+            if(num1<29)tr[num2].children[num1 + 1].style.backgroundColor = "white"
+            if(num2!==0){
+                tr[num2 - 1].children[num1].style.backgroundColor = "white"
+                if(num1<29)tr[num2 - 1].children[num1 + 1].style.backgroundColor = "white"
+                if(num1!==0)tr[num2 - 1].children[num1 - 1].style.backgroundColor = "white"
+            }
+            if(num2<15)tr[num2 + 1].children[num1].style.backgroundColor = "white"
+            if(num1!==0 && num2<15)tr[num2 + 1].children[num1 - 1].style.backgroundColor = "white"
+            if(num1<29 && num2<15)tr[num2 + 1].children[num1 + 1].style.backgroundColor = "white"
+        }
+        // 点到空了,显示周围相接
+        for (let y = 0; y < 16; y++) {
+            for (let x = 0; x < 30; x++) {
+                if (tr[y].children[x].innerHTML === '') {
+                    tr[y].children[x].addEventListener("click", () => {
+                        Numbgc(x,y)
+                        if(y!==15){
+                            if(tr[y+1].children[x].innerHTML === '')Numbgc(x,y+1)
+                        }
+                        if(y!==15&&x!==29)if(tr[y+1].children[x+1].innerHTML === ''){
+                            Numbgc(x+1,y+1)
+                        }
+                        if(y!==15&&x!==0)if(tr[y+1].children[x-1].innerHTML === ''){
+                            Numbgc(x-1,y+1)
+                        }
+                        if(tr[y-1].children[x].innerHTML === ''){
+                            Numbgc(x,y-1)
+                        }
+                        if(y!==0&&x!==29)if(tr[y-1].children[x+1].innerHTML === ''){
+                            Numbgc(x+1,y-1)
+                        }
+                        if(tr[y-1].children[x-1].innerHTML === ''){
+                            Numbgc(x-1,y-1)
+                        }
+                        if(tr[y].children[x-1].innerHTML === ''){
+                            Numbgc(x-1,y)
+                        }
+                        if(x!==29)if(tr[y].children[x+1].innerHTML === ''){
+                            Numbgc(x+1,y)
+                        }
+                    })
+                }
+            }
+        }
+        
+       //判断地雷是否插上旗帜
+        const mineTime = setInterval(()=>{ 
+            let mineNum = 99
+            let mineFlag = false
+            document.querySelectorAll('td').forEach((data)=>{
+                if(data.innerHTML ==='雷'){
+                    mineFlag = true
+                }
+               
+            }) 
+            //假设插旗全部正常，则剩余雷数量
+            document.querySelectorAll('i').forEach((data)=>{mineNum--})
+            document.querySelector('span').innerHTML = mineNum
+            if(!mineFlag){
+                clearInterval(mineTime)
+                if(confirm('游戏胜利,是否重新开始'))location.reload() 
+            }
+        },1000)
+        
+        // 判断是否踩雷
+        mineArr.forEach((data) => {
+            tr[data[1]].children[data[0]].innerHTML = '雷'
+            tr[data[1]].children[data[0]].addEventListener('click', () => {
+                alert('踩雷了')
+                // 踩雷显示全部地雷
+                perspective()
+            })
+        }) 
+        //直接
+        function win(){
+            document.querySelectorAll('td').forEach((data)=>{data.innerHTML = 1})
+        }
+    </script>
+</body>
+
+</html>
