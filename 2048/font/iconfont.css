@@ -1,0 +1,29 @@
+@font-face {
+  font-family: "iconfont"; /* Project id  */
+  src: url('iconfont.ttf?t=1660469564432') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 16px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-shangxiazuoyouTriangle11:before {
+  content: "\e690";
+}
+
+.icon-shangxiazuoyouTriangle13:before {
+  content: "\e691";
+}
+
+.icon-shangxiazuoyouTriangle12:before {
+  content: "\e692";
+}
+
+.icon-shangxiazuoyouTriangle14:before {
+  content: "\e693";
+}
+

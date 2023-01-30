@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="./font/iconfont.css">
+    <link rel="stylesheet" href="./font_0seeehaznh7/iconfont.css">
+    <style>
+        body {
+            position: relative;
+        }
+        * {
+            margin: 0;
+            padding: 0;
+        }
+        .box {
+
+            width: 500px;
+            height: 500px;
+            background-color: #BBADA0;
+            margin: 100px auto;
+            border-radius: 5px;
+        }
+        .box div {
+            margin-left: 20px;
+            margin-top: 20px;
+            float: left;
+            border-radius: 5px;
+            width: 100px;
+            height: 100px;
+            background-color: #CDC1B4;
+            font-size: 50px;
+            line-height: 100px;
+            text-align: center;
+            font-weight: bold;
+        }
+        .button {
+            position: relative;
+        }
+        .button button {
+            height: 30px;
+            width: 30px;
+            border: 0 solid #000;
+            background-color: pink;
+            border-radius: 5px;
+        }
+        #one {
+            position: absolute;
+            top: -300px;
+            right: 50%;
+            transform: translate(400px);
+        }
+        #one:hover {
+            position: absolute;
+            top: -300px;
+            right: 50%;
+            transform: translate(400px,-10px) scale(1.3);
+            transition: all 0.5s;
+            
+        }
+
+        #two {
+            position: absolute;
+            top: -220px;
+            right: 50%;
+            transform: translate(400px);
+        }
+        #two:hover {
+            position: absolute;
+            top: -220px;
+            right: 50%;
+            transform: translate(400px);
+            transform: translate(400px,10px) scale(1.3);
+            transition: all 0.5s;
+        }
+        #three {
+            position: absolute;
+            top: -260px;
+            right: 50%;
+            transform: translate(360px);
+
+    
+        }
+        #three:hover {
+            position: absolute;
+            top: -260px;
+            right: 50%;
+
+            transform: translate(350px) scale(1.3);
+            transition: all 0.5s;
+        }
+        #four {
+            position: absolute;
+            top: -260px;
+            right: 50%;
+            transform: translate(440px);
+
+        }
+        #four:hover {
+            position: absolute;
+            top: -260px;
+            right: 50%;
+    
+            transform: translate(450px) scale(1.3);
+            transition: all 0.5s;
+        }
+        #five {
+            position: absolute;
+            top: -260px;
+            right: 50%;
+            border-radius: 50%;
+            transform: translate(400px)  scale(1.2);
+        }
+        #five:hover {
+            position: absolute;
+            top: -260px;
+            right: 50%;
+            border-radius: 50%;
+
+            transform: translate(400px) scale(1.3) rotate(180deg);
+            transition: all 0.5s;
+        }
+        table {
+            position: absolute;
+            top: 50px;
+            right: 50px;
+            border-collapse: collapse;
+        }
+        th,
+        td {
+            
+            width: 100px;
+            height: 50px;
+            border: 1px solid black;
+            text-align: center;
+            line-height: 50px;
+        }  
+
+    </style>
+</head>
+<body>
+    <!-- 画布 4*4 -->
+    <div class="box">
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+        <div></div>
+    </div>
+    <div class="button">
+        
+        <button name="top" class="iconfont icon-shangxiazuoyouTriangle13" id="one"></button>
+        <button name="botton" class="iconfont icon-shangxiazuoyouTriangle11" id="two"></button>
+        <button name="left" class="iconfont icon-shangxiazuoyouTriangle14" id="three"></button>
+        <button name="right" class="iconfont icon-shangxiazuoyouTriangle12" id="four"></button>
+        <button name="s" class="iconfont icon-jiazai_shuaxin" id="five"></button>
+    </div>
+    <table>
+        <tr>
+            <th>最高分</th>
+        </tr>
+        <tr>
+            <td><span></span></td>
+        </tr>
+    </table>
+    <script src="./js/2048.js"></script>
+</body>
+</html>

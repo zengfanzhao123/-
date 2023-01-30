@@ -1,0 +1,16 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5387529",
+      "name": "加载_刷新",
+      "font_class": "jiazai_shuaxin",
+      "unicode": "eaf4",
+      "unicode_decimal": 60148
+    }
+  ]
+}
